@@ -33,8 +33,15 @@ const DEFAULT_NOTICES = [
   },
 ];
 
+const STORAGE_KEY = 'wakwak2026_notices';
+
 function loadNotices() {
-  return DEFAULT_NOTICES;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : DEFAULT_NOTICES;
+  } catch {
+    return DEFAULT_NOTICES;
+  }
 }
 
 // ========================================
