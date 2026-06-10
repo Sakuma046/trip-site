@@ -47,7 +47,7 @@ function loadNotices() {
 // ========================================
 // PASSWORD
 // ========================================
-const CORRECT_PASSWORD = 'wakwak2026';
+const CORRECT_PASSWORD = 'Mogami2026';
 
 function checkPassword() {
   const val = document.getElementById('pw-input').value;
