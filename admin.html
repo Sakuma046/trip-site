@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理画面 — WAKWAKweek 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sky:    #070d2a;
+    --sky2:   #0e1a45;
+    --gold:   #FFD060;
+    --pink:   #FF6B9D;
+    --blue:   #4FC3F7;
+    --green:  #7EE8A2;
+    --white:  #EEF2FF;
+    --muted:  #8892b0;
+    --danger: #FF6B6B;
+  }
+
+  body {
+    background: var(--sky);
+    color: var(--white);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--sky);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    padding: 2rem;
+  }
+
+  .login-logo {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .login-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  /* ── SHARED INPUT STYLES ── */
+  input[type="password"],
+  input[type="text"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: var(--white);
+    font-size: 0.9rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+
+  textarea { resize: vertical; min-height: 120px; line-height: 1.7; }
+
+  select option { background: #0e1a45; color: var(--white); }
+
+  .btn {
+    padding: 0.65rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--pink));
+    color: #070d2a;
+    width: 100%;
+  }
+  .btn-success {
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    color: #070d2a;
+  }
+  .btn-danger {
+    background: rgba(255,107,107,0.15);
+    color: var(--danger);
+    border: 1px solid rgba(255,107,107,0.3);
+  }
+  .btn-ghost {
+    background: rgba(255,255,255,0.07);
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .error-msg {
+    font-size: 0.78rem;
+    color: var(--pink);
+    min-height: 1.1em;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── ADMIN LAYOUT ── */
+  #admin-content { display: none; }
+
+  header {
+    position: sticky;
+    top: 0;
+    background: rgba(7,13,42,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+
+  .header-logo {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    background: linear-gradient(135deg, var(--gold), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-tag {
+    font-size: 0.68rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(255,208,96,0.15);
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+
+  .btn-to-site {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.9rem;
+  }
+
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  /* ── SECTION ── */
+  .admin-section {
+    margin-bottom: 3rem;
+  }
+
+  .admin-section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  /* ── NOTICE CARDS (管理リスト) ── */
+  .admin-notice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .admin-notice-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-notice-info { flex: 1; min-width: 0; }
+
+  .admin-notice-top {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .admin-notice-date { font-size: 0.72rem; color: var(--muted); }
+
+  .notice-badge {
+    font-size: 0.62rem;
+    padding: 0.12rem 0.45rem;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .badge-new    { background: rgba(255,208,96,0.2);  color: var(--gold);  }
+  .badge-info   { background: rgba(79,195,247,0.2);  color: var(--blue);  }
+  .badge-update { background: rgba(126,232,162,0.2); color: var(--green); }
+
+  .admin-notice-title {
+    font-size: 0.88rem;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .admin-notice-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .btn-sm {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .drag-handle {
+    cursor: grab;
+    color: var(--muted);
+    font-size: 1rem;
+    align-self: center;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .drag-handle:active { cursor: grabbing; }
+
+  /* ── FORM ── */
+  .admin-form {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .form-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-end;
+    padding-top: 0.4rem;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--sky2);
+    border: 1px solid rgba(126,232,162,0.4);
+    color: var(--green);
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    z-index: 200;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    border: 1px dashed rgba(255,255,255,0.1);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 540px) {
+    header { padding: 0.85rem 1rem; }
+    main { padding: 1.5rem 1rem 4rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .admin-notice-card { flex-wrap: wrap; }
+    .admin-notice-actions { width: 100%; justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <p class="login-logo">WAKWAKweek</p>
+  <p class="login-sub">管理画面 / ADMIN</p>
+  <div class="login-form">
+    <input type="password" id="admin-pw-input" placeholder="管理パスワードを入力" autocomplete="off"/>
+    <button class="btn btn-primary" onclick="adminLogin()">ログイン</button>
+    <p class="error-msg" id="admin-pw-error"></p>
+  </div>
+</div>
+
+<!-- ── ADMIN CONTENT ── -->
+<div id="admin-content">
+
+  <header>
+    <p class="header-logo">WAKWAKweek</p>
+    <div class="header-meta">
+      <span class="header-tag">ADMIN</span>
+      <a href="index.html" class="btn btn-ghost btn-sm btn-to-site">← サイトへ</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- お知らせ一覧 -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">📣 お知らせ管理</h2>
+      <div class="admin-notice-list" id="admin-notice-list"></div>
+    </div>
+
+    <!-- 追加・編集フォーム -->
+    <div class="admin-section">
+      <h2 class="admin-section-title" id="form-title">✏️ 新規追加</h2>
+      <div class="admin-form">
+        <input type="hidden" id="edit-id"/>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">日付</label>
+            <input type="text" id="f-date" placeholder="例: 2026.07.01 または TBD"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">バッジ</label>
+            <select id="f-badge">
+              <option value="badge-new|NEW">🟡 NEW</option>
+              <option value="badge-info|INFO">🔵 INFO</option>
+              <option value="badge-update|準備中">🟢 準備中</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">タイトル</label>
+          <input type="text" id="f-title" placeholder="お知らせのタイトルを入力"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">本文（改行OK）</label>
+          <textarea id="f-body" placeholder="詳細内容を入力。改行はそのまま反映されます。"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-ghost" onclick="resetForm()">キャンセル</button>
+          <button class="btn btn-success" onclick="saveNotice()">💾 保存する</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PASSWORD = 'wakwak2026';
+const STORAGE_KEY = 'wakwak2026_notices';
+
+const DEFAULT_NOTICES = [
+  { id: 1, date: '2026.06.10', badge: 'badge-new',    label: 'NEW',   title: 'WAKWAKweek 2026 サイトをオープンしました🎆', body: 'WAKWAKweek 2026 の公式サイトをオープンしました！\n\n今年も夏休み特別企画「夏だ！花火だ！旅行だ！WAKWAKweek」を開催します。\nサイトでは旅程やスケジュールなど随時情報を更新していきます。お楽しみに！' },
+  { id: 2, date: '2026.06.10', badge: 'badge-info',   label: 'INFO',  title: '今年の行き先が決定しました！', body: '今年の行き先は以下の2か所に決定しました！\n\n🏔️ DESTINATION 01 — 栃木県・那須高原\n緑と温泉の高原リゾート。涼しい夏をのんびりと満喫します。\n\n🎆 DESTINATION 02 — 山形県鶴岡・赤川花火大会\n東北が誇る大花火大会。夜空いっぱいに広がる大輪の花火を一緒に見上げましょう！' },
+  { id: 3, date: 'TBD',        badge: 'badge-update', label: '準備中', title: '旅程・スケジュールの詳細は追って決定いたします', body: '現在、旅程・スケジュールの詳細を調整中です。\n\n決定次第このサイトでお知らせします。\nもうしばらくお待ちください！' },
+];
+
+// ── 認証 ──
+function adminLogin() {
+  const val = document.getElementById('admin-pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+    renderAdminList();
+  } else {
+    const err = document.getElementById('admin-pw-error');
+    err.textContent = 'パスワードが違います';
+    document.getElementById('admin-pw-input').value = '';
+    setTimeout(() => { err.textContent = ''; }, 2500);
+  }
+}
+document.getElementById('admin-pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') adminLogin();
+});
+
+// ── データ読み書き ──
+function loadNotices() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_NOTICES));
+  } catch { return JSON.parse(JSON.stringify(DEFAULT_NOTICES)); }
+}
+
+function saveNotices(notices) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notices));
+}
+
+// ── リスト描画 ──
+function renderAdminList() {
+  const notices = loadNotices();
+  const list = document.getElementById('admin-notice-list');
+
+  if (notices.length === 0) {
+    list.innerHTML = '<div class="empty-state">お知らせがありません。下のフォームから追加してください。</div>';
+    return;
+  }
+
+  list.innerHTML = notices.map((n, idx) => `
+    <div class="admin-notice-card" data-id="${n.id}">
+      <span class="drag-handle" title="ドラッグで並び替え">⠿</span>
+      <div class="admin-notice-info">
+        <div class="admin-notice-top">
+          <span class="admin-notice-date">${n.date}</span>
+          <span class="notice-badge ${n.badge}">${n.label}</span>
+        </div>
+        <p class="admin-notice-title">${n.title}</p>
+      </div>
+      <div class="admin-notice-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editNotice(${n.id})">編集</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteNotice(${n.id})">削除</button>
+      </div>
+    </div>
+  `).join('');
+
+  initDragSort();
+}
+
+// ── 編集 ──
+function editNotice(id) {
+  const notices = loadNotices();
+  const n = notices.find(x => x.id === id);
+  if (!n) return;
+
+  document.getElementById('edit-id').value = n.id;
+  document.getElementById('f-date').value  = n.date;
+  document.getElementById('f-title').value = n.title;
+  document.getElementById('f-body').value  = n.body;
+
+  const sel = document.getElementById('f-badge');
+  for (let opt of sel.options) {
+    if (opt.value.startsWith(n.badge)) { sel.value = opt.value; break; }
+  }
+
+  document.getElementById('form-title').textContent = '✏️ 編集中';
+  document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── 削除 ──
+function deleteNotice(id) {
+  if (!confirm('このお知らせを削除しますか？')) return;
+  const notices = loadNotices().filter(n => n.id !== id);
+  saveNotices(notices);
+  renderAdminList();
+  showToast('削除しました');
+}
+
+// ── 保存（追加 or 更新）──
+function saveNotice() {
+  const date  = document.getElementById('f-date').value.trim();
+  const title = document.getElementById('f-title').value.trim();
+  const body  = document.getElementById('f-body').value.trim();
+  const badgeVal = document.getElementById('f-badge').value; // "badge-new|NEW"
+  const editId   = document.getElementById('edit-id').value;
+
+  if (!date || !title || !body) {
+    showToast('日付・タイトル・本文は必須です', true);
+    return;
+  }
+
+  const [badge, label] = badgeVal.split('|');
+  const notices = loadNotices();
+
+  if (editId) {
+    // 更新
+    const idx = notices.findIndex(n => n.id === parseInt(editId));
+    if (idx !== -1) {
+      notices[idx] = { ...notices[idx], date, badge, label, title, body };
+    }
+  } else {
+    // 新規追加
+    const newId = notices.length > 0 ? Math.max(...notices.map(n => n.id)) + 1 : 1;
+    notices.unshift({ id: newId, date, badge, label, title, body });
+  }
+
+  saveNotices(notices);
+  renderAdminList();
+  resetForm();
+  showToast(editId ? '更新しました ✓' : '追加しました ✓');
+}
+
+// ── フォームリセット ──
+function resetForm() {
+  document.getElementById('edit-id').value  = '';
+  document.getElementById('f-date').value   = '';
+  document.getElementById('f-title').value  = '';
+  document.getElementById('f-body').value   = '';
+  document.getElementById('f-badge').selectedIndex = 0;
+  document.getElementById('form-title').textContent = '✏️ 新規追加';
+}
+
+// ── TOAST ──
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderColor = isError ? 'rgba(255,107,107,0.4)' : 'rgba(126,232,162,0.4)';
+  t.style.color = isError ? 'var(--danger)' : 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── ドラッグ並び替え ──
+function initDragSort() {
+  const list = document.getElementById('admin-notice-list');
+  let dragging = null;
+
+  list.querySelectorAll('.admin-notice-card').forEach(card => {
+    card.setAttribute('draggable', true);
+
+    card.addEventListener('dragstart', () => {
+      dragging = card;
+      setTimeout(() => card.style.opacity = '0.4', 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.style.opacity = '';
+      dragging = null;
+      // DOMの順序でnoticesを並び替えて保存
+      const newOrder = [...list.querySelectorAll('.admin-notice-card')].map(c => parseInt(c.dataset.id));
+      const notices = loadNotices();
+      const reordered = newOrder.map(id => notices.find(n => n.id === id)).filter(Boolean);
+      saveNotices(reordered);
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragging && dragging !== card) {
+        const rect = card.getBoundingClientRect();
+        const mid  = rect.top + rect.height / 2;
+        if (e.clientY < mid) list.insertBefore(dragging, card);
+        else list.insertBefore(dragging, card.nextSibling);
+      }
+    });
+  });
+}
+</script>
+</body>
+</html>
