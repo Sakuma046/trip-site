@@ -5,393 +5,268 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>管理画面 — WAKWAKweek 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --sky:    #070d2a;
-    --sky2:   #0e1a45;
-    --gold:   #FFD060;
-    --pink:   #FF6B9D;
-    --blue:   #4FC3F7;
-    --green:  #7EE8A2;
-    --white:  #EEF2FF;
-    --muted:  #8892b0;
-    --danger: #FF6B6B;
+    --sky:#070d2a; --sky2:#0e1a45; --gold:#FFD060; --pink:#FF6B9D;
+    --blue:#4FC3F7; --green:#7EE8A2; --white:#EEF2FF; --muted:#8892b0; --danger:#FF6B6B;
   }
+  body { background:var(--sky); color:var(--white); font-family:'Noto Sans JP',sans-serif; min-height:100vh; }
 
-  body {
-    background: var(--sky);
-    color: var(--white);
-    font-family: 'Noto Sans JP', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* ── LOGIN ── */
+  /* LOGIN */
   #login-screen {
-    position: fixed;
-    inset: 0;
-    background: var(--sky);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.2rem;
-    padding: 2rem;
+    position:fixed; inset:0; background:var(--sky); z-index:100;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.2rem; padding:2rem;
   }
-
   .login-logo {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 1.6rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--gold), var(--pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family:'Noto Serif JP',serif; font-size:1.6rem; font-weight:900;
+    background:linear-gradient(135deg,var(--gold),var(--pink));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   }
+  .login-sub { font-size:0.78rem; color:var(--muted); letter-spacing:0.15em; }
+  .login-form { display:flex; flex-direction:column; gap:0.6rem; width:100%; max-width:300px; }
 
-  .login-sub {
-    font-size: 0.78rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
+  input[type="password"], input[type="text"], input[type="date"], select, textarea {
+    width:100%; padding:0.65rem 0.9rem;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15);
+    border-radius:8px; color:var(--white); font-size:0.9rem;
+    font-family:'Noto Sans JP',sans-serif; outline:none; transition:border-color 0.2s; -webkit-appearance:none;
   }
-
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    width: 100%;
-    max-width: 300px;
-  }
-
-  /* ── SHARED INPUT STYLES ── */
-  input[type="password"],
-  input[type="text"],
-  input[type="date"],
-  select,
-  textarea {
-    width: 100%;
-    padding: 0.65rem 0.9rem;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    color: var(--white);
-    font-size: 0.9rem;
-    font-family: 'Noto Sans JP', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
-
-  textarea { resize: vertical; min-height: 120px; line-height: 1.7; }
-
-  select option { background: #0e1a45; color: var(--white); }
+  input:focus, select:focus, textarea:focus { border-color:var(--gold); }
+  input[type="date"] { color-scheme: dark; }
+  textarea { resize:vertical; min-height:120px; line-height:1.7; }
+  select option { background:#0e1a45; color:var(--white); }
 
   .btn {
-    padding: 0.65rem 1.2rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    font-family: 'Noto Sans JP', sans-serif;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-    letter-spacing: 0.05em;
+    padding:0.65rem 1.2rem; border:none; border-radius:8px;
+    font-size:0.85rem; font-weight:700; font-family:'Noto Sans JP',sans-serif;
+    cursor:pointer; transition:opacity 0.2s,transform 0.15s; letter-spacing:0.05em;
   }
-  .btn:hover { opacity: 0.85; }
-  .btn:active { transform: scale(0.97); }
+  .btn:hover { opacity:0.85; } .btn:active { transform:scale(0.97); }
+  .btn-primary { background:linear-gradient(135deg,var(--gold),var(--pink)); color:#070d2a; width:100%; }
+  .btn-success { background:linear-gradient(135deg,var(--green),var(--blue)); color:#070d2a; }
+  .btn-danger  { background:rgba(255,107,107,0.15); color:var(--danger); border:1px solid rgba(255,107,107,0.3); }
+  .btn-ghost   { background:rgba(255,255,255,0.07); color:var(--muted); border:1px solid rgba(255,255,255,0.1); }
+  .btn-sm { padding:0.35rem 0.7rem; font-size:0.75rem; }
+  .error-msg { font-size:0.78rem; color:var(--pink); min-height:1.1em; }
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--gold), var(--pink));
-    color: #070d2a;
-    width: 100%;
-  }
-  .btn-success {
-    background: linear-gradient(135deg, var(--green), var(--blue));
-    color: #070d2a;
-  }
-  .btn-danger {
-    background: rgba(255,107,107,0.15);
-    color: var(--danger);
-    border: 1px solid rgba(255,107,107,0.3);
-  }
-  .btn-ghost {
-    background: rgba(255,255,255,0.07);
-    color: var(--muted);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .error-msg {
-    font-size: 0.78rem;
-    color: var(--pink);
-    min-height: 1.1em;
-    letter-spacing: 0.03em;
-  }
-
-  /* ── ADMIN LAYOUT ── */
-  #admin-content { display: none; }
-
+  /* ADMIN LAYOUT */
+  #admin-content { display:none; }
   header {
-    position: sticky;
-    top: 0;
-    background: rgba(7,13,42,0.9);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 50;
+    position:sticky; top:0; background:rgba(7,13,42,0.9); backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255,255,255,0.08); padding:1rem 2rem;
+    display:flex; align-items:center; justify-content:space-between; z-index:50;
   }
-
   .header-logo {
-    font-family: 'Noto Serif JP', serif;
-    font-weight: 900;
-    font-size: 0.95rem;
-    letter-spacing: 0.1em;
-    background: linear-gradient(135deg, var(--gold), var(--pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family:'Noto Serif JP',serif; font-weight:900; font-size:0.95rem; letter-spacing:0.1em;
+    background:linear-gradient(135deg,var(--gold),var(--pink));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   }
-
-  .header-meta {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
+  .header-meta { display:flex; align-items:center; gap:1rem; }
   .header-tag {
-    font-size: 0.68rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    background: rgba(255,208,96,0.15);
-    color: var(--gold);
-    letter-spacing: 0.1em;
-    font-weight: 700;
+    font-size:0.68rem; padding:0.2rem 0.6rem; border-radius:4px;
+    background:rgba(255,208,96,0.15); color:var(--gold); letter-spacing:0.1em; font-weight:700;
   }
-
-  .btn-to-site {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.9rem;
-  }
-
-  main {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem 5rem;
-  }
-
-  /* ── SECTION ── */
-  .admin-section {
-    margin-bottom: 3rem;
-  }
-
+  main { max-width:780px; margin:0 auto; padding:2.5rem 1.5rem 5rem; }
+  .admin-section { margin-bottom:3rem; }
   .admin-section-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+    font-family:'Noto Serif JP',serif; font-size:1.1rem; font-weight:700;
+    margin-bottom:1.2rem; padding-bottom:0.6rem;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:center; gap:0.6rem;
   }
 
-  /* ── NOTICE CARDS (管理リスト) ── */
-  .admin-notice-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.2rem;
-  }
-
+  /* NOTICE LIST */
+  .admin-notice-list { display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.2rem; }
   .admin-notice-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
+    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px; padding:1rem 1.2rem; display:flex; align-items:flex-start; gap:1rem;
   }
+  .admin-notice-info { flex:1; min-width:0; }
+  .admin-notice-top { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.35rem; flex-wrap:wrap; }
+  .admin-notice-date { font-size:0.72rem; color:var(--muted); }
+  .notice-badge { font-size:0.62rem; padding:0.12rem 0.45rem; border-radius:4px; font-weight:700; letter-spacing:0.05em; }
+  .badge-important{ background:rgba(255,107,107,0.2); color:#FF6B6B; font-weight:700; }
+  .badge-new    { background:rgba(255,208,96,0.2);  color:var(--gold);  }
+  .badge-info   { background:rgba(79,195,247,0.2);  color:var(--blue);  }
+  .badge-update { background:rgba(126,232,162,0.2); color:var(--green); }
+  .admin-notice-title { font-size:0.88rem; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .admin-notice-actions { display:flex; gap:0.5rem; flex-shrink:0; align-items:center; }
+  .drag-handle { cursor:grab; color:var(--muted); font-size:1rem; align-self:center; user-select:none; flex-shrink:0; }
+  .drag-handle:active { cursor:grabbing; }
 
-  .admin-notice-info { flex: 1; min-width: 0; }
-
-  .admin-notice-top {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.35rem;
-    flex-wrap: wrap;
-  }
-
-  .admin-notice-date { font-size: 0.72rem; color: var(--muted); }
-
-  .notice-badge {
-    font-size: 0.62rem;
-    padding: 0.12rem 0.45rem;
-    border-radius: 4px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-  }
-  .badge-new    { background: rgba(255,208,96,0.2);  color: var(--gold);  }
-  .badge-info   { background: rgba(79,195,247,0.2);  color: var(--blue);  }
-  .badge-update { background: rgba(126,232,162,0.2); color: var(--green); }
-
-  .admin-notice-title {
-    font-size: 0.88rem;
-    color: var(--white);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .admin-notice-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-shrink: 0;
-    align-items: center;
-  }
-
-  .btn-sm {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-  }
-
-  .drag-handle {
-    cursor: grab;
-    color: var(--muted);
-    font-size: 1rem;
-    align-self: center;
-    user-select: none;
-    flex-shrink: 0;
-  }
-  .drag-handle:active { cursor: grabbing; }
-
-  /* ── FORM ── */
+  /* FORM */
   .admin-form {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px; padding:1.5rem; display:flex; flex-direction:column; gap:1rem;
   }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+  .form-group { display:flex; flex-direction:column; gap:0.35rem; }
+  .form-label { font-size:0.72rem; color:var(--muted); letter-spacing:0.1em; font-weight:500; }
+  .form-actions { display:flex; gap:0.6rem; justify-content:flex-end; padding-top:0.4rem; }
 
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.8rem;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-
-  .form-label {
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    font-weight: 500;
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 0.6rem;
-    justify-content: flex-end;
-    padding-top: 0.4rem;
-  }
-
-  /* ── TOAST ── */
+  /* TOAST */
   .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--sky2);
-    border: 1px solid rgba(126,232,162,0.4);
-    color: var(--green);
-    padding: 0.7rem 1.4rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    z-index: 200;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
+    position:fixed; bottom:2rem; left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--sky2); border:1px solid rgba(126,232,162,0.4); color:var(--green);
+    padding:0.7rem 1.4rem; border-radius:8px; font-size:0.85rem; font-weight:700;
+    z-index:200; transition:transform 0.3s ease,opacity 0.3s ease; opacity:0; pointer-events:none;
   }
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 
-  /* ── EMPTY STATE ── */
   .empty-state {
-    text-align: center;
-    padding: 2.5rem 1rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-    background: rgba(255,255,255,0.02);
-    border-radius: 10px;
-    border: 1px dashed rgba(255,255,255,0.1);
+    text-align:center; padding:2.5rem 1rem; color:var(--muted); font-size:0.85rem;
+    background:rgba(255,255,255,0.02); border-radius:10px; border:1px dashed rgba(255,255,255,0.1);
   }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 540px) {
-    header { padding: 0.85rem 1rem; }
-    main { padding: 1.5rem 1rem 4rem; }
-    .form-row { grid-template-columns: 1fr; }
-    .admin-notice-card { flex-wrap: wrap; }
-    .admin-notice-actions { width: 100%; justify-content: flex-end; }
+  /* ローディング */
+  .loading { color:var(--muted); font-size:0.85rem; padding:1rem 0; }
+
+  /* メンテナンスカード */
+  .maintenance-card {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:1.4rem 1.6rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1.5rem;
+    flex-wrap:wrap;
+  }
+  .maintenance-info { flex:1; }
+  .maintenance-status-label { font-size:0.7rem; color:var(--muted); letter-spacing:0.15em; margin-bottom:0.3rem; }
+  .maintenance-status {
+    font-family:'Noto Serif JP',serif;
+    font-size:1.3rem;
+    font-weight:900;
+    margin-bottom:0.4rem;
+  }
+  .maintenance-status.on  { color:var(--pink); }
+  .maintenance-status.off { color:var(--green); }
+  .maintenance-desc { font-size:0.78rem; color:var(--muted); line-height:1.6; }
+  .maintenance-toggle-btn { min-width:120px; font-size:0.9rem; padding:0.7rem 1.4rem; }
+  .maintenance-toggle-btn.is-on  { background:rgba(126,232,162,0.15); color:var(--green); border:1px solid rgba(126,232,162,0.3); }
+  .maintenance-toggle-btn.is-off { background:rgba(255,107,107,0.15); color:var(--danger); border:1px solid rgba(255,107,107,0.3); }
+
+  /* ログ統計 */
+  .log-stat-card {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px;
+    padding:0.9rem 1.4rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0.3rem;
+    min-width:90px;
+  }
+  .log-stat-num {
+    font-family:'Noto Serif JP',serif;
+    font-size:1.8rem;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--gold),var(--pink));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    line-height:1;
+  }
+  .log-stat-label { font-size:0.72rem; color:var(--muted); letter-spacing:0.05em; }
+
+  @media (max-width:540px) {
+    header { padding:0.85rem 1rem; } main { padding:1.5rem 1rem 4rem; }
+    .form-row { grid-template-columns:1fr; }
+    .admin-notice-card { flex-wrap:wrap; }
+    .admin-notice-actions { width:100%; justify-content:flex-end; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
 <div id="login-screen">
   <p class="login-logo">WAKWAKweek</p>
   <p class="login-sub">管理画面 / ADMIN</p>
   <div class="login-form">
     <input type="password" id="admin-pw-input" placeholder="管理パスワードを入力" autocomplete="off"/>
-    <button class="btn btn-primary" onclick="adminLogin()">ログイン</button>
+    <button class="btn btn-primary" id="login-btn">ログイン</button>
     <p class="error-msg" id="admin-pw-error"></p>
   </div>
 </div>
 
-<!-- ── ADMIN CONTENT ── -->
 <div id="admin-content">
-
   <header>
     <p class="header-logo">WAKWAKweek</p>
     <div class="header-meta">
       <span class="header-tag">ADMIN</span>
-      <a href="index.html" class="btn btn-ghost btn-sm btn-to-site">← サイトへ</a>
+      <a href="index.html" class="btn btn-ghost btn-sm">← サイトへ</a>
     </div>
   </header>
-
   <main>
-
-    <!-- お知らせ一覧 -->
+    <!-- メンテナンスモード -->
     <div class="admin-section">
-      <h2 class="admin-section-title">📣 お知らせ管理</h2>
-      <div class="admin-notice-list" id="admin-notice-list"></div>
+      <h2 class="admin-section-title">🔧 メンテナンスモード</h2>
+      <div class="maintenance-card">
+        <div class="maintenance-info">
+          <p class="maintenance-status-label">現在の状態</p>
+          <p class="maintenance-status" id="maintenance-status">読み込み中...</p>
+          <p class="maintenance-desc">ONにするとサイト訪問者にメンテナンス画面が表示されます。</p>
+        </div>
+        <button class="btn maintenance-toggle-btn" id="maintenance-toggle-btn" disabled>
+          読み込み中...
+        </button>
+      </div>
     </div>
 
-    <!-- 追加・編集フォーム -->
+    <!-- 重要お知らせバナー管理 -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">
+        🔔 重要お知らせバナー
+        <button class="btn btn-success btn-sm" id="new-banner-btn" style="margin-left:auto;">＋ 追加</button>
+      </h2>
+      <div class="admin-notice-list" id="banner-admin-list">
+        <p class="loading">読み込み中...</p>
+      </div>
+
+      <!-- バナー追加・編集フォーム（初期非表示） -->
+      <div class="admin-form" id="banner-form" style="margin-top:1.2rem; display:none;">
+        <input type="hidden" id="bn-edit-id"/>
+        <div class="form-group">
+          <label class="form-label">テキスト（バナーに流れる文章）</label>
+          <input type="text" id="bn-text" placeholder="例: 集合時間が変更になりました！詳細はスケジュールをご確認ください。"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">表示開始日</label>
+            <input type="date" id="bn-start"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">表示終了日</label>
+            <input type="date" id="bn-end"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">優先度（数字が小さいほど先に表示）</label>
+          <input type="text" id="bn-priority" placeholder="例: 1" inputmode="numeric"/>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="bn-cancel-btn">キャンセル</button>
+          <button class="btn btn-success" id="bn-save-btn">💾 保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <h2 class="admin-section-title">📣 お知らせ管理</h2>
+      <div class="admin-notice-list" id="admin-notice-list">
+        <p class="loading">読み込み中...</p>
+      </div>
+    </div>
     <div class="admin-section">
       <h2 class="admin-section-title" id="form-title">✏️ 新規追加</h2>
       <div class="admin-form">
         <input type="hidden" id="edit-id"/>
-
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">日付</label>
@@ -400,53 +275,297 @@
           <div class="form-group">
             <label class="form-label">バッジ</label>
             <select id="f-badge">
+              <option value="badge-important|重要">🔴 重要</option>
               <option value="badge-new|NEW">🟡 NEW</option>
               <option value="badge-info|INFO">🔵 INFO</option>
               <option value="badge-update|準備中">🟢 準備中</option>
             </select>
           </div>
         </div>
-
         <div class="form-group">
           <label class="form-label">タイトル</label>
           <input type="text" id="f-title" placeholder="お知らせのタイトルを入力"/>
         </div>
-
         <div class="form-group">
           <label class="form-label">本文（改行OK）</label>
           <textarea id="f-body" placeholder="詳細内容を入力。改行はそのまま反映されます。"></textarea>
         </div>
-
         <div class="form-actions">
-          <button class="btn btn-ghost" onclick="resetForm()">キャンセル</button>
-          <button class="btn btn-success" onclick="saveNotice()">💾 保存する</button>
+          <button class="btn btn-ghost" id="cancel-btn">キャンセル</button>
+          <button class="btn btn-success" id="save-btn">💾 保存する</button>
         </div>
+      </div>
+    </div>
+
+    <!-- アンケート管理 -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">
+        📝 アンケート管理
+        <button class="btn btn-success btn-sm" id="new-survey-btn" style="margin-left:auto;">＋ 新規作成</button>
+      </h2>
+      <div id="survey-admin-list"><p class="loading">読み込み中...</p></div>
+    </div>
+
+    <!-- 費用管理 -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">
+        💰 費用管理
+        <label class="expense-public-toggle">
+          <input type="checkbox" id="expense-public-checkbox" checked/>
+          <span>サイトに公開する</span>
+        </label>
+      </h2>
+
+      <div class="expenses-total-admin" id="expenses-total-admin"></div>
+
+      <div class="admin-notice-list" id="expense-admin-list">
+        <p class="loading">読み込み中...</p>
+      </div>
+
+      <div class="admin-form" style="margin-top:1.2rem;">
+        <input type="hidden" id="exp-edit-id"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">項目名</label>
+            <input type="text" id="exp-name" placeholder="例: 宿泊費（1人あたり）"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">金額（円）</label>
+            <input type="text" id="exp-amount" placeholder="例: 12000" inputmode="numeric"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">メモ（任意）</label>
+          <input type="text" id="exp-memo" placeholder="例: 那須高原 1泊2食付き"/>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="exp-cancel-btn">キャンセル</button>
+          <button class="btn btn-success" id="exp-save-btn">💾 保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 工程表管理（那須高原） -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">🗓️ 那須高原 工程表</h2>
+
+      <div class="admin-notice-list" id="itinerary-admin-list">
+        <p class="loading">読み込み中...</p>
+      </div>
+
+      <div class="admin-form" style="margin-top:1.2rem;">
+        <input type="hidden" id="it-edit-id"/>
+
+        <!-- 日付 -->
+        <div class="form-group">
+          <label class="form-label">日付</label>
+          <input type="date" id="it-date"/>
+        </div>
+
+        <!-- 時間セレクト -->
+        <div class="form-group">
+          <label class="form-label">時間（任意）</label>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <select id="it-time-h" style="width:auto;flex:1;">
+              <option value="">--</option>
+              ${Array.from({length:24},(_,i)=>`<option value="${String(i).padStart(2,'0')}">${String(i).padStart(2,'0')}時</option>`).join('')}
+            </select>
+            <span style="color:var(--muted);font-size:0.9rem;">:</span>
+            <select id="it-time-m" style="width:auto;flex:1;">
+              <option value="00">00分</option>
+              <option value="15">15分</option>
+              <option value="30">30分</option>
+              <option value="45">45分</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- アイコン選択 -->
+        <div class="form-group">
+          <label class="form-label">アイコン</label>
+          <div class="icon-picker" id="icon-picker">
+            <button type="button" class="icon-btn" data-icon="🚗" onclick="selectItineraryIcon('🚗')">🚗</button>
+            <button type="button" class="icon-btn" data-icon="🚌" onclick="selectItineraryIcon('🚌')">🚌</button>
+            <button type="button" class="icon-btn" data-icon="🚶" onclick="selectItineraryIcon('🚶')">🚶</button>
+            <button type="button" class="icon-btn" data-icon="🏨" onclick="selectItineraryIcon('🏨')">🏨</button>
+            <button type="button" class="icon-btn" data-icon="🍜" onclick="selectItineraryIcon('🍜')">🍜</button>
+            <button type="button" class="icon-btn" data-icon="🍱" onclick="selectItineraryIcon('🍱')">🍱</button>
+            <button type="button" class="icon-btn" data-icon="☕" onclick="selectItineraryIcon('☕')">☕</button>
+            <button type="button" class="icon-btn" data-icon="🍦" onclick="selectItineraryIcon('🍦')">🍦</button>
+            <button type="button" class="icon-btn" data-icon="🛒" onclick="selectItineraryIcon('🛒')">🛒</button>
+            <button type="button" class="icon-btn" data-icon="🏔️" onclick="selectItineraryIcon('🏔️')">🏔️</button>
+            <button type="button" class="icon-btn" data-icon="♨️" onclick="selectItineraryIcon('♨️')">♨️</button>
+            <button type="button" class="icon-btn" data-icon="🎯" onclick="selectItineraryIcon('🎯')">🎯</button>
+            <button type="button" class="icon-btn" data-icon="📷" onclick="selectItineraryIcon('📷')">📷</button>
+            <button type="button" class="icon-btn" data-icon="🌿" onclick="selectItineraryIcon('🌿')">🌿</button>
+            <button type="button" class="icon-btn" data-icon="🎉" onclick="selectItineraryIcon('🎉')">🎉</button>
+            <button type="button" class="icon-btn" data-icon="💤" onclick="selectItineraryIcon('💤')">💤</button>
+            <button type="button" class="icon-btn" data-icon="✈️" onclick="selectItineraryIcon('✈️')">✈️</button>
+            <button type="button" class="icon-btn" data-icon="🚢" onclick="selectItineraryIcon('🚢')">🚢</button>
+            <button type="button" class="icon-btn" data-icon="🎪" onclick="selectItineraryIcon('🎪')">🎪</button>
+            <button type="button" class="icon-btn" data-icon="🏊" onclick="selectItineraryIcon('🏊')">🏊</button>
+          </div>
+          <input type="text" id="it-icon" placeholder="または直接入力" style="margin-top:0.5rem;"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">タイトル</label>
+          <input type="text" id="it-title" placeholder="例: 那須岳ハイキング"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">場所（任意）</label>
+          <input type="text" id="it-location" placeholder="例: 那須岳ロープウェイ"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">メモ（任意・改行OK）</label>
+          <textarea id="it-memo" placeholder="持ち物・注意事項など" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="it-cancel-btn">キャンセル</button>
+          <button class="btn btn-success" id="it-save-btn">💾 保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- スケジュール管理 -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">📅 スケジュール管理</h2>
+
+      <div class="admin-notice-list" id="schedule-admin-list">
+        <p class="loading">読み込み中...</p>
+      </div>
+
+      <div class="admin-form" style="margin-top:1.2rem;">
+        <input type="hidden" id="sc-edit-id"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">日付</label>
+            <input type="date" id="sc-date"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">時間（任意）</label>
+            <input type="text" id="sc-time" placeholder="例: 10:00〜12:00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">タイトル</label>
+          <input type="text" id="sc-title" placeholder="例: 那須高原 出発"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">場所（任意）</label>
+          <input type="text" id="sc-location" placeholder="例: 東京駅 八重洲口"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">メモ（任意・改行OK）</label>
+          <textarea id="sc-memo" placeholder="持ち物や注意事項など" style="min-height:80px;"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="sc-cancel-btn">キャンセル</button>
+          <button class="btn btn-success" id="sc-save-btn">💾 保存する</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- アクセスログ -->
+    <div class="admin-section">
+      <h2 class="admin-section-title">
+        📊 アクセスログ
+        <button class="btn btn-ghost btn-sm" id="refresh-log-btn" style="margin-left:auto;">🔄 更新</button>
+      </h2>
+      <div id="log-summary" style="display:flex;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap;"></div>
+      <div id="log-list">
+        <p class="loading">読み込み中...</p>
       </div>
     </div>
 
   </main>
 </div>
 
-<!-- TOAST -->
+<!-- アンケート作成・編集モーダル -->
+<div id="survey-edit-modal" style="display:none;position:fixed;inset:0;background:rgba(7,13,42,0.92);z-index:500;overflow-y:auto;padding:2rem 1.5rem;backdrop-filter:blur(6px);">
+  <div style="max-width:640px;margin:0 auto;">
+    <button onclick="closeSurveyModal()" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;margin-bottom:1.5rem;display:block;">← 閉じる</button>
+    <h3 style="font-family:'Noto Serif JP',serif;font-size:1.2rem;font-weight:900;margin-bottom:1.5rem;" id="survey-modal-title">📝 アンケート作成</h3>
+    <input type="hidden" id="sm-id"/>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="form-group"><label class="form-label">タイトル</label><input type="text" id="sm-title" placeholder="例: 那須高原の部屋割りについて"/></div>
+      <div class="form-group"><label class="form-label">説明（任意）</label><input type="text" id="sm-desc" placeholder="例: 希望を教えてください"/></div>
+      <div class="form-group">
+        <label class="form-label">ステータス</label>
+        <select id="sm-status"><option value="open">📝 回答受付中</option><option value="closed">🔒 締め切り</option></select>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;">
+          <label class="form-label" style="margin:0;">質問リスト</label>
+          <button class="btn btn-ghost btn-sm" onclick="addQuestionForm()">＋ 質問を追加</button>
+        </div>
+        <div class="survey-q-form-list" id="sm-questions"></div>
+      </div>
+      <div class="form-actions" style="padding-top:0.5rem;">
+        <button class="btn btn-ghost" onclick="closeSurveyModal()">キャンセル</button>
+        <button class="btn btn-success" onclick="saveSurvey()">💾 保存する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 回答結果モーダル -->
+<div class="survey-result-modal" id="survey-result-modal">
+  <div class="survey-result-inner">
+    <button class="survey-result-close" onclick="closeResultModal()">← 閉じる</button>
+    <p class="section-label">SURVEY RESULTS</p>
+    <h3 style="font-family:'Noto Serif JP',serif;font-size:1.3rem;font-weight:900;margin-bottom:0.5rem;" id="result-modal-title"></h3>
+    <p class="survey-total-label" id="result-modal-total"></p>
+    <div id="result-modal-body"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc,
+  doc, writeBatch, orderBy, query, serverTimestamp, getDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyCv1ac1eMCUujBH-STo_PVuzHUVheSglBg",
+  authDomain:        "wakwakweek2026-2387c.firebaseapp.com",
+  projectId:         "wakwakweek2026-2387c",
+  storageBucket:     "wakwakweek2026-2387c.firebasestorage.app",
+  messagingSenderId: "690803691039",
+  appId:             "1:690803691039:web:6fe9ce83e40d85612c4f2a"
+};
+
+const app     = initializeApp(firebaseConfig);
+const db      = getFirestore(app);
+const storage = getStorage(app);
+
 const ADMIN_PASSWORD = 'wakwak2026';
-const STORAGE_KEY = 'wakwak2026_notices';
 
-const DEFAULT_NOTICES = [
-  { id: 1, date: '2026.06.10', badge: 'badge-new',    label: 'NEW',   title: 'WAKWAKweek 2026 サイトをオープンしました🎆', body: 'WAKWAKweek 2026 の公式サイトをオープンしました！\n\n今年も夏休み特別企画「夏だ！花火だ！旅行だ！WAKWAKweek」を開催します。\nサイトでは旅程やスケジュールなど随時情報を更新していきます。お楽しみに！' },
-  { id: 2, date: '2026.06.10', badge: 'badge-info',   label: 'INFO',  title: '今年の行き先が決定しました！', body: '今年の行き先は以下の2か所に決定しました！\n\n🏔️ DESTINATION 01 — 栃木県・那須高原\n緑と温泉の高原リゾート。涼しい夏をのんびりと満喫します。\n\n🎆 DESTINATION 02 — 山形県鶴岡・赤川花火大会\n東北が誇る大花火大会。夜空いっぱいに広がる大輪の花火を一緒に見上げましょう！' },
-  { id: 3, date: 'TBD',        badge: 'badge-update', label: '準備中', title: '旅程・スケジュールの詳細は追って決定いたします', body: '現在、旅程・スケジュールの詳細を調整中です。\n\n決定次第このサイトでお知らせします。\nもうしばらくお待ちください！' },
-];
+// ── ログイン ──
+document.getElementById('login-btn').addEventListener('click', adminLogin);
+document.getElementById('admin-pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') adminLogin();
+});
 
-// ── 認証 ──
 function adminLogin() {
   const val = document.getElementById('admin-pw-input').value;
   if (val === ADMIN_PASSWORD) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
-    renderAdminList();
+    loadNotices();
+    loadLogs();
+    loadMaintenance();
+    loadBannerAdmin();
+    loadSurveyAdmin();
+    loadExpenseAdmin();
+    loadItineraryAdmin();
+    loadScheduleAdmin();
   } else {
     const err = document.getElementById('admin-pw-error');
     err.textContent = 'パスワードが違います';
@@ -454,34 +573,34 @@ function adminLogin() {
     setTimeout(() => { err.textContent = ''; }, 2500);
   }
 }
-document.getElementById('admin-pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') adminLogin();
-});
 
-// ── データ読み書き ──
-function loadNotices() {
+// ── Firestore 読み込み ──
+let currentNotices = [];
+
+async function loadNotices() {
+  const list = document.getElementById('admin-notice-list');
+  list.innerHTML = '<p class="loading">読み込み中...</p>';
   try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_NOTICES));
-  } catch { return JSON.parse(JSON.stringify(DEFAULT_NOTICES)); }
-}
-
-function saveNotices(notices) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notices));
+    const snapshot = await getDocs(collection(db, 'notices'));
+    currentNotices = [];
+    snapshot.forEach(d => currentNotices.push({ docId: d.id, ...d.data() }));
+    currentNotices.sort((a, b) => String(a.order ?? '').localeCompare(String(b.order ?? ''), undefined, { numeric: true }));
+    renderAdminList();
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;">読み込みに失敗しました。</p>';
+  }
 }
 
 // ── リスト描画 ──
 function renderAdminList() {
-  const notices = loadNotices();
   const list = document.getElementById('admin-notice-list');
-
-  if (notices.length === 0) {
+  if (currentNotices.length === 0) {
     list.innerHTML = '<div class="empty-state">お知らせがありません。下のフォームから追加してください。</div>';
     return;
   }
-
-  list.innerHTML = notices.map((n, idx) => `
-    <div class="admin-notice-card" data-id="${n.id}">
+  list.innerHTML = currentNotices.map(n => `
+    <div class="admin-notice-card" data-docid="${n.docId}">
       <span class="drag-handle" title="ドラッグで並び替え">⠿</span>
       <div class="admin-notice-info">
         <div class="admin-notice-top">
@@ -491,50 +610,61 @@ function renderAdminList() {
         <p class="admin-notice-title">${n.title}</p>
       </div>
       <div class="admin-notice-actions">
-        <button class="btn btn-ghost btn-sm" onclick="editNotice(${n.id})">編集</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteNotice(${n.id})">削除</button>
+        <button class="btn btn-ghost btn-sm" data-edit="${n.docId}">編集</button>
+        <button class="btn btn-danger btn-sm" data-delete="${n.docId}">削除</button>
       </div>
     </div>
   `).join('');
+
+  // イベント登録
+  list.querySelectorAll('[data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => editNotice(btn.dataset.edit));
+  });
+  list.querySelectorAll('[data-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteNotice(btn.dataset.delete));
+  });
 
   initDragSort();
 }
 
 // ── 編集 ──
-function editNotice(id) {
-  const notices = loadNotices();
-  const n = notices.find(x => x.id === id);
+function editNotice(docId) {
+  const n = currentNotices.find(x => x.docId === docId);
   if (!n) return;
-
-  document.getElementById('edit-id').value = n.id;
-  document.getElementById('f-date').value  = n.date;
-  document.getElementById('f-title').value = n.title;
-  document.getElementById('f-body').value  = n.body;
-
+  document.getElementById('edit-id').value  = docId;
+  document.getElementById('f-date').value   = n.date;
+  document.getElementById('f-title').value  = n.title;
+  document.getElementById('f-body').value   = n.body;
   const sel = document.getElementById('f-badge');
   for (let opt of sel.options) {
     if (opt.value.startsWith(n.badge)) { sel.value = opt.value; break; }
   }
-
   document.getElementById('form-title').textContent = '✏️ 編集中';
-  document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelector('.admin-form').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 // ── 削除 ──
-function deleteNotice(id) {
+async function deleteNotice(docId) {
   if (!confirm('このお知らせを削除しますか？')) return;
-  const notices = loadNotices().filter(n => n.id !== id);
-  saveNotices(notices);
-  renderAdminList();
-  showToast('削除しました');
+  try {
+    await deleteDoc(doc(db, 'notices', docId));
+    showToast('削除しました');
+    await loadNotices();
+  } catch(e) {
+    console.error(e);
+    showToast('削除に失敗しました', true);
+  }
 }
 
-// ── 保存（追加 or 更新）──
-function saveNotice() {
-  const date  = document.getElementById('f-date').value.trim();
-  const title = document.getElementById('f-title').value.trim();
-  const body  = document.getElementById('f-body').value.trim();
-  const badgeVal = document.getElementById('f-badge').value; // "badge-new|NEW"
+// ── 保存（追加 or 更新） ──
+document.getElementById('save-btn').addEventListener('click', saveNotice);
+document.getElementById('cancel-btn').addEventListener('click', resetForm);
+
+async function saveNotice() {
+  const date     = document.getElementById('f-date').value.trim();
+  const title    = document.getElementById('f-title').value.trim();
+  const body     = document.getElementById('f-body').value.trim();
+  const badgeVal = document.getElementById('f-badge').value;
   const editId   = document.getElementById('edit-id').value;
 
   if (!date || !title || !body) {
@@ -543,24 +673,26 @@ function saveNotice() {
   }
 
   const [badge, label] = badgeVal.split('|');
-  const notices = loadNotices();
 
-  if (editId) {
-    // 更新
-    const idx = notices.findIndex(n => n.id === parseInt(editId));
-    if (idx !== -1) {
-      notices[idx] = { ...notices[idx], date, badge, label, title, body };
+  try {
+    if (editId) {
+      // 更新
+      await updateDoc(doc(db, 'notices', editId), { date, badge, label, title, body });
+      showToast('更新しました ✓');
+    } else {
+      // 新規追加（末尾に追加 → 既存の最大order + 1をstringで保存）
+      const maxOrder = currentNotices.length > 0
+        ? Math.max(...currentNotices.map(n => parseInt(n.order ?? '0'))) + 1
+        : 0;
+      await addDoc(collection(db, 'notices'), { date, badge, label, title, body, order: String(maxOrder) });
+      showToast('追加しました ✓');
     }
-  } else {
-    // 新規追加
-    const newId = notices.length > 0 ? Math.max(...notices.map(n => n.id)) + 1 : 1;
-    notices.unshift({ id: newId, date, badge, label, title, body });
+    resetForm();
+    await loadNotices();
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました', true);
   }
-
-  saveNotices(notices);
-  renderAdminList();
-  resetForm();
-  showToast(editId ? '更新しました ✓' : '追加しました ✓');
 }
 
 // ── フォームリセット ──
@@ -583,33 +715,1103 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── ドラッグ並び替え ──
+// ── ドラッグ並び替え（Firestore order フィールドを一括更新） ──
 function initDragSort() {
   const list = document.getElementById('admin-notice-list');
   let dragging = null;
 
   list.querySelectorAll('.admin-notice-card').forEach(card => {
     card.setAttribute('draggable', true);
-
     card.addEventListener('dragstart', () => {
       dragging = card;
       setTimeout(() => card.style.opacity = '0.4', 0);
     });
-    card.addEventListener('dragend', () => {
+    card.addEventListener('dragend', async () => {
       card.style.opacity = '';
       dragging = null;
-      // DOMの順序でnoticesを並び替えて保存
-      const newOrder = [...list.querySelectorAll('.admin-notice-card')].map(c => parseInt(c.dataset.id));
-      const notices = loadNotices();
-      const reordered = newOrder.map(id => notices.find(n => n.id === id)).filter(Boolean);
-      saveNotices(reordered);
+      // DOM順にorderを振り直してFirestoreへ一括書き込み
+      const cards = [...list.querySelectorAll('.admin-notice-card')];
+      const batch = writeBatch(db);
+      cards.forEach((c, i) => {
+        batch.update(doc(db, 'notices', c.dataset.docid), { order: String(i) });
+      });
+      await batch.commit();
+      await loadNotices();
     });
     card.addEventListener('dragover', e => {
       e.preventDefault();
       if (dragging && dragging !== card) {
         const rect = card.getBoundingClientRect();
-        const mid  = rect.top + rect.height / 2;
-        if (e.clientY < mid) list.insertBefore(dragging, card);
+        if (e.clientY < rect.top + rect.height / 2) list.insertBefore(dragging, card);
+        else list.insertBefore(dragging, card.nextSibling);
+      }
+    });
+  });
+}
+
+// ========================================
+// アクセスログ読み込み・表示
+// ========================================
+async function loadLogs() {
+  const logList    = document.getElementById('log-list');
+  const logSummary = document.getElementById('log-summary');
+  logList.innerHTML = '<p class="loading">読み込み中...</p>';
+
+  try {
+    const q = query(collection(db, 'logs'), orderBy('timestamp', 'desc'));
+    const snapshot = await getDocs(q);
+
+    const logs = [];
+    snapshot.forEach(d => logs.push({ docId: d.id, ...d.data() }));
+
+    if (logs.length === 0) {
+      logList.innerHTML = '<div class="empty-state">アクセスログがまだありません。</div>';
+      logSummary.innerHTML = '';
+      return;
+    }
+
+    // サマリー（合計・デバイス別）
+    const total   = logs.length;
+    const mobile  = logs.filter(l => l.device === 'スマホ／タブレット').length;
+    const pc      = logs.filter(l => l.device === 'PC').length;
+    logSummary.innerHTML = `
+      <div class="log-stat-card"><span class="log-stat-num">${total}</span><span class="log-stat-label">総アクセス</span></div>
+      <div class="log-stat-card"><span class="log-stat-num">${mobile}</span><span class="log-stat-label">📱 スマホ</span></div>
+      <div class="log-stat-card"><span class="log-stat-num">${pc}</span><span class="log-stat-label">💻 PC</span></div>
+    `;
+
+    // ログを日付ごとにグループ化
+    const groups = {};
+    logs.forEach(l => {
+      const d = l.timestamp?.toDate ? l.timestamp.toDate() : null;
+      const dateKey = d
+        ? d.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' })
+        : '日時不明';
+      const timeStr = d
+        ? d.toLocaleTimeString('ja-JP', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' })
+        : '---';
+      if (!groups[dateKey]) groups[dateKey] = [];
+      groups[dateKey].push({ ...l, _time: timeStr });
+    });
+
+    // 日付グループごとにdetails要素で表示（最新の日付だけ開いた状態）
+    const dateKeys = Object.keys(groups);
+    logList.innerHTML = dateKeys.map((dateKey, gi) => `
+      <details class="log-date-group" ${gi === 0 ? 'open' : ''}>
+        <summary class="log-date-summary">
+          <span class="log-date-summary-text">${dateKey}</span>
+          <span class="log-date-count">${groups[dateKey].length}件</span>
+        </summary>
+        <div class="log-date-items">
+          ${groups[dateKey].map(l => `
+            <div class="admin-notice-card ${l.isOwner ? 'log-owner-card' : ''}">
+              <div class="admin-notice-info">
+                <div class="admin-notice-top">
+                  <span class="admin-notice-date">${l._time}</span>
+                  ${l.isOwner ? '<span class="notice-badge badge-owner">👑 自分</span>' : ''}
+                  <span class="notice-badge badge-info">${l.device ?? '不明'}</span>
+                  <span class="notice-badge badge-update">${l.os ?? '不明'}</span>
+                </div>
+                <p class="admin-notice-title" style="opacity:0.6;">ブラウザ: ${l.browser ?? '不明'}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </details>
+    `).join('');
+
+  } catch(e) {
+    console.error(e);
+    logList.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;">ログの読み込みに失敗しました。</p>';
+  }
+}
+
+document.getElementById('refresh-log-btn').addEventListener('click', loadLogs);
+
+// ========================================
+// メンテナンスモード制御
+// ========================================
+async function loadMaintenance() {
+  const btn    = document.getElementById('maintenance-toggle-btn');
+  const status = document.getElementById('maintenance-status');
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'maintenance'));
+    const isOn = snap.exists() ? snap.data().enabled : false;
+    updateMaintenanceUI(isOn);
+  } catch(e) {
+    console.error(e);
+    status.textContent = '取得失敗';
+  }
+}
+
+function updateMaintenanceUI(isOn) {
+  const btn    = document.getElementById('maintenance-toggle-btn');
+  const status = document.getElementById('maintenance-status');
+  status.textContent = isOn ? '🔴 メンテナンス中' : '🟢 通常公開中';
+  status.className   = 'maintenance-status ' + (isOn ? 'on' : 'off');
+  btn.textContent    = isOn ? '✅ メンテナンスを終了する' : '🔧 メンテナンスをONにする';
+  btn.className      = 'btn maintenance-toggle-btn ' + (isOn ? 'is-on' : 'is-off');
+  btn.disabled       = false;
+  btn.dataset.current = isOn ? 'on' : 'off';
+}
+
+document.getElementById('maintenance-toggle-btn').addEventListener('click', async () => {
+  const btn   = document.getElementById('maintenance-toggle-btn');
+  const isOn  = btn.dataset.current === 'on';
+  const next  = !isOn;
+  const label = next ? 'メンテナンスモードをONにします。よろしいですか？' : 'メンテナンスを終了してサイトを公開しますか？';
+  if (!confirm(label)) return;
+  btn.disabled = true;
+  btn.textContent = '更新中...';
+  try {
+    await setDoc(doc(db, 'settings', 'maintenance'), { enabled: next });
+    updateMaintenanceUI(next);
+    showToast(next ? '🔧 メンテナンスモードをONにしました' : '✅ サイトを公開しました');
+  } catch(e) {
+    console.error(e);
+    showToast('更新に失敗しました', true);
+    btn.disabled = false;
+  }
+});
+
+// ========================================
+// アンケート管理
+// ========================================
+let surveyList = [];
+let qFormCount = 0;
+
+async function loadSurveyAdmin() {
+  const list = document.getElementById('survey-admin-list');
+  list.innerHTML = '<p class="loading">読み込み中...</p>';
+  try {
+    const snapshot = await getDocs(collection(db, 'surveys'));
+    surveyList = [];
+    snapshot.forEach(d => surveyList.push({ id: d.id, ...d.data() }));
+    surveyList.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    renderSurveyAdminList();
+  } catch(e) {
+    list.innerHTML = '<p style="color:var(--danger);">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderSurveyAdminList() {
+  const list = document.getElementById('survey-admin-list');
+  if (surveyList.length === 0) {
+    list.innerHTML = '<div class="empty-state">アンケートがありません。「＋ 新規作成」から作成してください。</div>';
+    return;
+  }
+  list.innerHTML = surveyList.map(s => `
+    <div class="survey-admin-card">
+      <div class="survey-admin-card-top">
+        <div class="survey-admin-info">
+          <p class="survey-admin-title">${s.title}</p>
+          <div class="survey-admin-meta">
+            <span class="survey-badge ${s.status === 'open' ? 'survey-badge-open' : 'survey-badge-closed'}">
+              ${s.status === 'open' ? '📝 受付中' : '🔒 締め切り'}
+            </span>
+            <span style="font-size:0.75rem;color:var(--muted);">${(s.questions||[]).length}問</span>
+          </div>
+        </div>
+        <div class="survey-admin-actions">
+          <button class="btn btn-ghost btn-sm" onclick="showSurveyResults('${s.id}')">📊 結果</button>
+          <button class="btn btn-ghost btn-sm" onclick="editSurvey('${s.id}')">編集</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSurvey('${s.id}')">削除</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// 新規作成
+document.getElementById('new-survey-btn').addEventListener('click', () => {
+  document.getElementById('sm-id').value    = '';
+  document.getElementById('sm-title').value = '';
+  document.getElementById('sm-desc').value  = '';
+  document.getElementById('sm-status').value = 'open';
+  document.getElementById('sm-questions').innerHTML = '';
+  document.getElementById('survey-modal-title').textContent = '📝 アンケート作成';
+  qFormCount = 0;
+  addQuestionForm();
+  document.getElementById('survey-edit-modal').style.display = 'block';
+});
+
+// 編集
+function editSurvey(id) {
+  const s = surveyList.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('sm-id').value     = s.id;
+  document.getElementById('sm-title').value  = s.title;
+  document.getElementById('sm-desc').value   = s.description || '';
+  document.getElementById('sm-status').value = s.status || 'open';
+  document.getElementById('survey-modal-title').textContent = '✏️ アンケート編集';
+  const qList = document.getElementById('sm-questions');
+  qList.innerHTML = '';
+  qFormCount = 0;
+  (s.questions || []).forEach(q => addQuestionForm(q));
+  document.getElementById('survey-edit-modal').style.display = 'block';
+}
+window.editSurvey = editSurvey;
+
+// 質問フォームを追加
+function addQuestionForm(preset = null) {
+  const idx  = qFormCount++;
+  const div  = document.createElement('div');
+  div.className = 'survey-q-form-item';
+  div.dataset.idx = idx;
+  const type = preset?.type || 'radio';
+  div.innerHTML = `
+    <div class="survey-q-form-row">
+      <input type="text" class="sq-text" placeholder="質問文を入力" value="${preset?.text || ''}"/>
+      <select class="sq-type" onchange="onTypeChange(this)">
+        <option value="radio"    ${type==='radio'    ? 'selected' : ''}>単一選択</option>
+        <option value="checkbox" ${type==='checkbox' ? 'selected' : ''}>複数選択</option>
+        <option value="text"     ${type==='text'     ? 'selected' : ''}>自由記述</option>
+      </select>
+      <button class="btn btn-danger btn-sm" onclick="this.closest('.survey-q-form-item').remove()">✕</button>
+    </div>
+    <div class="sq-options-wrap ${type==='text' ? 'hidden' : ''}">
+      <div class="survey-options-admin"></div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:0.4rem;" onclick="addOptionRow(this)">＋ 選択肢を追加</button>
+    </div>`;
+  document.getElementById('sm-questions').appendChild(div);
+
+  // プリセットの選択肢を追加
+  if (preset?.options?.length) {
+    preset.options.forEach(opt => {
+      const text     = typeof opt === 'string' ? opt : (opt.text || '');
+      const imageUrl = typeof opt === 'string' ? '' : (opt.imageUrl || '');
+      addOptionRow(div.querySelector('.survey-options-admin + button'), text, imageUrl);
+    });
+  } else if (type !== 'text') {
+    addOptionRow(div.querySelector('.survey-options-admin + button'), '');
+    addOptionRow(div.querySelector('.survey-options-admin + button'), '');
+  }
+}
+window.addQuestionForm = addQuestionForm;
+
+function onTypeChange(sel) {
+  const wrap = sel.closest('.survey-q-form-item').querySelector('.sq-options-wrap');
+  wrap.style.display = sel.value === 'text' ? 'none' : '';
+}
+window.onTypeChange = onTypeChange;
+
+function addOptionRow(btn, value = '', imageUrl = '') {
+  const wrap = btn.closest('.sq-options-wrap').querySelector('.survey-options-admin');
+  const row  = document.createElement('div');
+  row.className = 'survey-option-admin-row';
+  row.innerHTML = `
+    <input type="text" placeholder="選択肢のテキスト" value="${value}"/>
+    <label class="option-img-label">
+      ${imageUrl
+        ? `<img src="${imageUrl}" class="option-img-preview" alt="preview"/>`
+        : `<span class="option-img-placeholder">📷</span>`
+      }
+      <input type="file" accept="image/*" class="option-img-input" style="display:none;"/>
+      <input type="hidden" class="option-img-url" value="${imageUrl}"/>
+    </label>
+    <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>`;
+  wrap.appendChild(row);
+
+  // 画像選択時にStorageへアップロード
+  const fileInput = row.querySelector('.option-img-input');
+  const label     = row.querySelector('.option-img-label');
+  label.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const placeholder = row.querySelector('.option-img-placeholder');
+    const preview     = row.querySelector('.option-img-preview');
+    const urlInput    = row.querySelector('.option-img-url');
+
+    // アップロード中表示
+    label.style.opacity = '0.5';
+    label.title = 'アップロード中...';
+
+    try {
+      const storageRef = ref(storage, `survey-options/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      urlInput.value = url;
+
+      // プレビュー更新
+      if (placeholder) placeholder.remove();
+      if (preview) {
+        preview.src = url;
+      } else {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'option-img-preview';
+        img.alt = 'preview';
+        label.insertBefore(img, fileInput);
+      }
+      label.style.opacity = '';
+      label.title = '画像をクリックして変更';
+    } catch(e) {
+      console.error('画像アップロード失敗:', e);
+      showToast('画像のアップロードに失敗しました', true);
+      label.style.opacity = '';
+    }
+  });
+}
+window.addOptionRow = addOptionRow;
+
+function closeSurveyModal() {
+  document.getElementById('survey-edit-modal').style.display = 'none';
+}
+window.closeSurveyModal = closeSurveyModal;
+
+// 保存
+async function saveSurvey() {
+  const id     = document.getElementById('sm-id').value;
+  const title  = document.getElementById('sm-title').value.trim();
+  const desc   = document.getElementById('sm-desc').value.trim();
+  const status = document.getElementById('sm-status').value;
+
+  if (!title) { showToast('タイトルを入力してください', true); return; }
+
+  const questions = [...document.querySelectorAll('#sm-questions .survey-q-form-item')].map(item => {
+    const text = item.querySelector('.sq-text').value.trim();
+    const type = item.querySelector('.sq-type').value;
+    const opts = [...item.querySelectorAll('.survey-options-admin .survey-option-admin-row')].map(row => ({
+      text:     row.querySelector('input[type="text"]').value.trim(),
+      imageUrl: row.querySelector('.option-img-url')?.value || '',
+    })).filter(o => o.text);
+    return type === 'text' ? { text, type } : { text, type, options: opts };
+  }).filter(q => q.text);
+
+  if (questions.length === 0) { showToast('質問を1つ以上追加してください', true); return; }
+
+  try {
+    if (id) {
+      await updateDoc(doc(db, 'surveys', id), { title, description: desc, status, questions });
+    } else {
+      await addDoc(collection(db, 'surveys'), { title, description: desc, status, questions, createdAt: serverTimestamp() });
+    }
+    showToast(id ? '更新しました ✓' : '作成しました ✓');
+    closeSurveyModal();
+    await loadSurveyAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました', true);
+  }
+}
+window.saveSurvey = saveSurvey;
+
+// 削除
+async function deleteSurvey(id) {
+  if (!confirm('このアンケートを削除しますか？回答データは残ります。')) return;
+  try {
+    await deleteDoc(doc(db, 'surveys', id));
+    showToast('削除しました');
+    await loadSurveyAdmin();
+  } catch(e) { showToast('削除に失敗しました', true); }
+}
+window.deleteSurvey = deleteSurvey;
+
+// 結果表示
+async function showSurveyResults(surveyId) {
+  const survey  = surveyList.find(s => s.id === surveyId);
+  if (!survey) return;
+  const modal   = document.getElementById('survey-result-modal');
+  const body    = document.getElementById('result-modal-body');
+  const titleEl = document.getElementById('result-modal-title');
+  const totalEl = document.getElementById('result-modal-total');
+  titleEl.textContent = survey.title;
+  body.innerHTML = '<p class="loading">読み込み中...</p>';
+  modal.classList.add('active');
+
+  try {
+    const snapshot = await getDocs(collection(db, 'answers'));
+    const allAnswers = [];
+    snapshot.forEach(d => { const data = d.data(); if (data.surveyId === surveyId) allAnswers.push(data); });
+    totalEl.textContent = `回答数: ${allAnswers.length}件`;
+
+    if (allAnswers.length === 0) {
+      body.innerHTML = '<div class="empty-state">まだ回答がありません。</div>';
+      return;
+    }
+
+    body.innerHTML = (survey.questions || []).map((q, qi) => {
+      const answers = allAnswers.map(a => a.answers?.[qi]?.answer).filter(a => a !== undefined && a !== '');
+
+      let resultHtml = '';
+      if (q.type === 'text') {
+        resultHtml = `<div class="survey-free-answers">${answers.map(a =>
+          `<div class="survey-free-answer-item">${Array.isArray(a) ? a.join(', ') : a}</div>`
+        ).join('') || '<p style="color:var(--muted);font-size:0.85rem;">回答なし</p>'}</div>`;
+      } else {
+        // 選択肢ごとに集計
+        const counts = {};
+        (q.options || []).forEach(opt => { counts[opt] = 0; });
+        answers.forEach(a => {
+          const vals = Array.isArray(a) ? a : [a];
+          vals.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+        });
+        const total = Object.values(counts).reduce((s, c) => s + c, 0) || 1;
+        resultHtml = `<div class="survey-result-bar-wrap">${Object.entries(counts).map(([opt, cnt]) => `
+          <div class="survey-result-bar-row">
+            <span class="survey-result-bar-label">${opt}</span>
+            <div class="survey-result-bar-track"><div class="survey-result-bar-fill" style="width:${Math.round(cnt/total*100)}%"></div></div>
+            <span class="survey-result-bar-count">${cnt}票</span>
+          </div>`).join('')}</div>`;
+      }
+      return `
+        <div class="survey-result-q">
+          <p class="survey-result-q-text">Q${qi+1}. ${q.text}</p>
+          ${resultHtml}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    body.innerHTML = '<p style="color:var(--danger);">読み込みに失敗しました。</p>';
+  }
+}
+window.showSurveyResults = showSurveyResults;
+
+function closeResultModal() {
+  document.getElementById('survey-result-modal').classList.remove('active');
+}
+window.closeResultModal = closeResultModal;
+
+// ========================================
+// 費用管理
+// ========================================
+let expenseList = [];
+
+async function loadExpenseAdmin() {
+  const list = document.getElementById('expense-admin-list');
+  list.innerHTML = '<p class="loading">読み込み中...</p>';
+
+  try {
+    // 公開設定を読み込み
+    const settingsSnap = await getDoc(doc(db, 'settings', 'expenses'));
+    const isPublic = settingsSnap.exists() ? (settingsSnap.data().public !== false) : true;
+    document.getElementById('expense-public-checkbox').checked = isPublic;
+
+    // 費用一覧を読み込み
+    const snapshot = await getDocs(collection(db, 'expenses'));
+    expenseList = [];
+    snapshot.forEach(d => expenseList.push({ docId: d.id, ...d.data() }));
+    expenseList.sort((a, b) => String(a.order ?? '').localeCompare(String(b.order ?? ''), undefined, { numeric: true }));
+
+    renderExpenseAdminList();
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderExpenseAdminList() {
+  const list  = document.getElementById('expense-admin-list');
+  const total = expenseList.reduce((sum, it) => sum + (Number(it.amount) || 0), 0);
+
+  document.getElementById('expenses-total-admin').innerHTML =
+    `合計金額 <strong>¥${total.toLocaleString()}</strong>`;
+
+  if (expenseList.length === 0) {
+    list.innerHTML = '<div class="empty-state">費用項目がありません。下のフォームから追加してください。</div>';
+    return;
+  }
+
+  list.innerHTML = expenseList.map(it => `
+    <div class="admin-notice-card" data-docid="${it.docId}">
+      <span class="drag-handle" title="ドラッグで並び替え">⠿</span>
+      <div class="admin-notice-info">
+        <div class="admin-notice-top">
+          <span class="admin-notice-date" style="font-family:'Noto Serif JP',serif;font-size:0.95rem;font-weight:700;color:var(--white);">¥${Number(it.amount || 0).toLocaleString()}</span>
+        </div>
+        <p class="admin-notice-title">${it.name}${it.memo ? ` — ${it.memo}` : ''}</p>
+      </div>
+      <div class="admin-notice-actions">
+        <button class="btn btn-ghost btn-sm" data-exp-edit="${it.docId}">編集</button>
+        <button class="btn btn-danger btn-sm" data-exp-delete="${it.docId}">削除</button>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-exp-edit]').forEach(btn => {
+    btn.addEventListener('click', () => editExpense(btn.dataset.expEdit));
+  });
+  list.querySelectorAll('[data-exp-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteExpense(btn.dataset.expDelete));
+  });
+
+  initExpenseDragSort();
+}
+
+function editExpense(docId) {
+  const it = expenseList.find(x => x.docId === docId);
+  if (!it) return;
+  document.getElementById('exp-edit-id').value = docId;
+  document.getElementById('exp-name').value   = it.name;
+  document.getElementById('exp-amount').value = it.amount;
+  document.getElementById('exp-memo').value   = it.memo || '';
+  document.getElementById('exp-name').closest('.admin-form')?.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+async function deleteExpense(docId) {
+  if (!confirm('この費用項目を削除しますか？')) return;
+  try {
+    await deleteDoc(doc(db, 'expenses', docId));
+    showToast('削除しました');
+    await loadExpenseAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('削除に失敗しました', true);
+  }
+}
+
+document.getElementById('exp-save-btn').addEventListener('click', async () => {
+  const editId = document.getElementById('exp-edit-id').value;
+  const name   = document.getElementById('exp-name').value.trim();
+  const amount = document.getElementById('exp-amount').value.trim();
+  const memo   = document.getElementById('exp-memo').value.trim();
+
+  if (!name || !amount || isNaN(Number(amount))) {
+    showToast('項目名と金額（数値）は必須です', true);
+    return;
+  }
+
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'expenses', editId), { name, amount: Number(amount), memo });
+      showToast('更新しました ✓');
+    } else {
+      const maxOrder = expenseList.length > 0
+        ? Math.max(...expenseList.map(it => parseInt(it.order ?? '0'))) + 1
+        : 0;
+      await addDoc(collection(db, 'expenses'), { name, amount: Number(amount), memo, order: String(maxOrder) });
+      showToast('追加しました ✓');
+    }
+    resetExpenseForm();
+    await loadExpenseAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました', true);
+  }
+});
+
+document.getElementById('exp-cancel-btn').addEventListener('click', resetExpenseForm);
+
+function resetExpenseForm() {
+  document.getElementById('exp-edit-id').value = '';
+  document.getElementById('exp-name').value    = '';
+  document.getElementById('exp-amount').value  = '';
+  document.getElementById('exp-memo').value    = '';
+}
+
+// 公開トグル
+document.getElementById('expense-public-checkbox').addEventListener('change', async (e) => {
+  const isPublic = e.target.checked;
+  try {
+    await setDoc(doc(db, 'settings', 'expenses'), { public: isPublic });
+    showToast(isPublic ? '費用ページを公開しました ✓' : '費用ページを非公開にしました');
+  } catch(err) {
+    console.error(err);
+    showToast('更新に失敗しました', true);
+    e.target.checked = !isPublic; // 失敗時は元に戻す
+  }
+});
+
+// ドラッグ並び替え
+function initExpenseDragSort() {
+  const list = document.getElementById('expense-admin-list');
+  let dragging = null;
+
+  list.querySelectorAll('.admin-notice-card').forEach(card => {
+    card.setAttribute('draggable', true);
+    card.addEventListener('dragstart', () => {
+      dragging = card;
+      setTimeout(() => card.style.opacity = '0.4', 0);
+    });
+    card.addEventListener('dragend', async () => {
+      card.style.opacity = '';
+      dragging = null;
+      const cards = [...list.querySelectorAll('.admin-notice-card')];
+      const batch = writeBatch(db);
+      cards.forEach((c, i) => {
+        batch.update(doc(db, 'expenses', c.dataset.docid), { order: String(i) });
+      });
+      await batch.commit();
+      await loadExpenseAdmin();
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragging && dragging !== card) {
+        const rect = card.getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) list.insertBefore(dragging, card);
+        else list.insertBefore(dragging, card.nextSibling);
+      }
+    });
+  });
+}
+
+// ========================================
+// スケジュール管理
+// ========================================
+let scheduleAdminList = [];
+
+async function loadScheduleAdmin() {
+  const list = document.getElementById('schedule-admin-list');
+  list.innerHTML = '<p class="loading">読み込み中...</p>';
+
+  try {
+    const snapshot = await getDocs(collection(db, 'schedules'));
+    scheduleAdminList = [];
+    snapshot.forEach(d => scheduleAdminList.push({ docId: d.id, ...d.data() }));
+    // 日付・時間でソート
+    scheduleAdminList.sort((a, b) => {
+      const da = `${a.date || ''} ${a.time || ''}`;
+      const db_ = `${b.date || ''} ${b.time || ''}`;
+      return da.localeCompare(db_);
+    });
+    renderScheduleAdminList();
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderScheduleAdminList() {
+  const list = document.getElementById('schedule-admin-list');
+
+  if (scheduleAdminList.length === 0) {
+    list.innerHTML = '<div class="empty-state">予定がありません。下のフォームから追加してください。</div>';
+    return;
+  }
+
+  list.innerHTML = scheduleAdminList.map(s => {
+    const dateLabel = s.date
+      ? new Date(s.date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', weekday: 'short' })
+      : '日付未定';
+    return `
+      <div class="admin-notice-card" data-docid="${s.docId}">
+        <div class="admin-notice-info">
+          <div class="admin-notice-top">
+            <span class="admin-notice-date">${dateLabel}</span>
+            ${s.time ? `<span class="notice-badge badge-info">${s.time}</span>` : ''}
+          </div>
+          <p class="admin-notice-title">${s.title}${s.location ? ` — 📍${s.location}` : ''}</p>
+        </div>
+        <div class="admin-notice-actions">
+          <button class="btn btn-ghost btn-sm" data-sc-edit="${s.docId}">編集</button>
+          <button class="btn btn-danger btn-sm" data-sc-delete="${s.docId}">削除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  list.querySelectorAll('[data-sc-edit]').forEach(btn => {
+    btn.addEventListener('click', () => editSchedule(btn.dataset.scEdit));
+  });
+  list.querySelectorAll('[data-sc-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteSchedule(btn.dataset.scDelete));
+  });
+}
+
+function editSchedule(docId) {
+  const s = scheduleAdminList.find(x => x.docId === docId);
+  if (!s) return;
+  document.getElementById('sc-edit-id').value = docId;
+  document.getElementById('sc-date').value     = s.date || '';
+  document.getElementById('sc-time').value     = s.time || '';
+  document.getElementById('sc-title').value    = s.title || '';
+  document.getElementById('sc-location').value = s.location || '';
+  document.getElementById('sc-memo').value     = s.memo || '';
+  document.getElementById('sc-date').closest('.admin-form')?.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+async function deleteSchedule(docId) {
+  if (!confirm('この予定を削除しますか？')) return;
+  try {
+    await deleteDoc(doc(db, 'schedules', docId));
+    showToast('削除しました');
+    await loadScheduleAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('削除に失敗しました', true);
+  }
+}
+
+document.getElementById('sc-save-btn').addEventListener('click', async () => {
+  const editId   = document.getElementById('sc-edit-id').value;
+  const date     = document.getElementById('sc-date').value;
+  const time     = document.getElementById('sc-time').value.trim();
+  const title    = document.getElementById('sc-title').value.trim();
+  const location = document.getElementById('sc-location').value.trim();
+  const memo     = document.getElementById('sc-memo').value.trim();
+
+  if (!date || !title) {
+    showToast('日付とタイトルは必須です', true);
+    return;
+  }
+
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'schedules', editId), { date, time, title, location, memo });
+      showToast('更新しました ✓');
+    } else {
+      await addDoc(collection(db, 'schedules'), { date, time, title, location, memo });
+      showToast('追加しました ✓');
+    }
+    resetScheduleForm();
+    await loadScheduleAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました', true);
+  }
+});
+
+document.getElementById('sc-cancel-btn').addEventListener('click', resetScheduleForm);
+
+function resetScheduleForm() {
+  document.getElementById('sc-edit-id').value  = '';
+  document.getElementById('sc-date').value     = '';
+  document.getElementById('sc-time').value     = '';
+  document.getElementById('sc-title').value    = '';
+  document.getElementById('sc-location').value = '';
+  document.getElementById('sc-memo').value     = '';
+}
+
+// ========================================
+// バナー管理
+// ========================================
+let bannerAdminList = [];
+
+async function loadBannerAdmin() {
+  const list = document.getElementById('banner-admin-list');
+  list.innerHTML = '<p class="loading">読み込み中...</p>';
+  try {
+    const snapshot = await getDocs(collection(db, 'banners'));
+    bannerAdminList = [];
+    snapshot.forEach(d => bannerAdminList.push({ docId: d.id, ...d.data() }));
+    bannerAdminList.sort((a, b) => (a.priority || 99) - (b.priority || 99));
+    renderBannerAdminList();
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderBannerAdminList() {
+  const list = document.getElementById('banner-admin-list');
+  const now = new Date();
+
+  if (bannerAdminList.length === 0) {
+    list.innerHTML = '<div class="empty-state">バナーがありません。「＋ 追加」から登録してください。</div>';
+    return;
+  }
+
+  list.innerHTML = bannerAdminList.map(b => {
+    const start = b.startDate ? new Date(b.startDate) : null;
+    const end   = b.endDate   ? new Date(b.endDate + 'T23:59:59') : null;
+    const isActive = (!start || now >= start) && (!end || now <= end);
+    const period = [
+      b.startDate || '開始日未設定',
+      '〜',
+      b.endDate   || '終了日未設定'
+    ].join(' ');
+    return `
+      <div class="admin-notice-card">
+        <div class="admin-notice-info">
+          <div class="admin-notice-top">
+            <span class="notice-badge ${isActive ? 'badge-new' : 'badge-update'}">${isActive ? '表示中' : '非表示'}</span>
+            <span class="admin-notice-date">${period}</span>
+          </div>
+          <p class="admin-notice-title">${b.text}</p>
+        </div>
+        <div class="admin-notice-actions">
+          <button class="btn btn-ghost btn-sm" data-bn-edit="${b.docId}">編集</button>
+          <button class="btn btn-danger btn-sm" data-bn-delete="${b.docId}">削除</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-bn-edit]').forEach(btn => {
+    btn.addEventListener('click', () => editBanner(btn.dataset.bnEdit));
+  });
+  list.querySelectorAll('[data-bn-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteBanner(btn.dataset.bnDelete));
+  });
+}
+
+// ＋追加ボタン
+document.getElementById('new-banner-btn').addEventListener('click', () => {
+  resetBannerForm();
+  document.getElementById('banner-form').style.display = 'block';
+  document.getElementById('banner-form').scrollIntoView({ behavior:'smooth', block:'center' });
+});
+
+function editBanner(docId) {
+  const b = bannerAdminList.find(x => x.docId === docId);
+  if (!b) return;
+  document.getElementById('bn-edit-id').value = docId;
+  document.getElementById('bn-text').value     = b.text || '';
+  document.getElementById('bn-start').value    = b.startDate || '';
+  document.getElementById('bn-end').value      = b.endDate   || '';
+  document.getElementById('bn-priority').value = b.priority ?? '';
+  document.getElementById('banner-form').style.display = 'block';
+  document.getElementById('banner-form').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+async function deleteBanner(docId) {
+  if (!confirm('このバナーを削除しますか？')) return;
+  try {
+    await deleteDoc(doc(db, 'banners', docId));
+    showToast('削除しました');
+    await loadBannerAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('削除に失敗しました', true);
+  }
+}
+
+document.getElementById('bn-save-btn').addEventListener('click', async () => {
+  const editId   = document.getElementById('bn-edit-id').value;
+  const text     = document.getElementById('bn-text').value.trim();
+  const startDate = document.getElementById('bn-start').value;
+  const endDate   = document.getElementById('bn-end').value;
+  const priority  = parseInt(document.getElementById('bn-priority').value) || 99;
+
+  if (!text) { showToast('テキストは必須です', true); return; }
+
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'banners', editId), { text, startDate, endDate, priority });
+      showToast('更新しました ✓');
+    } else {
+      await addDoc(collection(db, 'banners'), { text, startDate, endDate, priority });
+      showToast('追加しました ✓');
+    }
+    resetBannerForm();
+    document.getElementById('banner-form').style.display = 'none';
+    await loadBannerAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました', true);
+  }
+});
+
+document.getElementById('bn-cancel-btn').addEventListener('click', () => {
+  resetBannerForm();
+  document.getElementById('banner-form').style.display = 'none';
+});
+
+function resetBannerForm() {
+  document.getElementById('bn-edit-id').value = '';
+  document.getElementById('bn-text').value    = '';
+  document.getElementById('bn-start').value   = '';
+  document.getElementById('bn-end').value     = '';
+  document.getElementById('bn-priority').value = '';
+}
+
+// ========================================
+// 工程表管理（那須高原 itinerary）
+// ========================================
+let itineraryAdminList = [];
+
+async function loadItineraryAdmin() {
+  const list = document.getElementById('itinerary-admin-list');
+  list.innerHTML = '<p class="loading">読み込み中...</p>';
+  try {
+    const snapshot = await getDocs(collection(db, 'itinerary'));
+    itineraryAdminList = [];
+    snapshot.forEach(d => itineraryAdminList.push({ docId: d.id, ...d.data() }));
+    itineraryAdminList.sort((a, b) => {
+      const da = `${a.date || ''} ${a.time || ''}`;
+      const db_ = `${b.date || ''} ${b.time || ''}`;
+      return da.localeCompare(db_);
+    });
+    renderItineraryAdminList();
+  } catch(e) {
+    console.error(e);
+    list.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;">読み込みに失敗しました。</p>';
+  }
+}
+
+function renderItineraryAdminList() {
+  const list = document.getElementById('itinerary-admin-list');
+  if (itineraryAdminList.length === 0) {
+    list.innerHTML = '<div class="empty-state">工程がありません。下のフォームから追加してください。</div>';
+    return;
+  }
+  list.innerHTML = itineraryAdminList.map(item => {
+    const d = item.date
+      ? new Date(item.date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', weekday: 'short' })
+      : '日付未定';
+    return `
+      <div class="admin-notice-card" data-docid="${item.docId}">
+        <span class="drag-handle" title="ドラッグで並び替え">⠿</span>
+        <div class="admin-notice-info">
+          <div class="admin-notice-top">
+            <span class="admin-notice-date">${d}</span>
+            ${item.time ? `<span class="notice-badge badge-info">${item.time}</span>` : ''}
+            <span style="font-size:1.1rem;">${item.icon || '📍'}</span>
+          </div>
+          <p class="admin-notice-title">${item.title}${item.location ? ` — 📍${item.location}` : ''}</p>
+        </div>
+        <div class="admin-notice-actions">
+          <button class="btn btn-ghost btn-sm" data-it-edit="${item.docId}">編集</button>
+          <button class="btn btn-danger btn-sm" data-it-delete="${item.docId}">削除</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-it-edit]').forEach(btn => {
+    btn.addEventListener('click', () => editItinerary(btn.dataset.itEdit));
+  });
+  list.querySelectorAll('[data-it-delete]').forEach(btn => {
+    btn.addEventListener('click', () => deleteItinerary(btn.dataset.itDelete));
+  });
+
+  initItineraryDragSort();
+}
+
+// アイコン選択
+function selectItineraryIcon(icon) {
+  document.getElementById('it-icon').value = icon;
+  // 選択中のボタンを強調
+  document.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.classList.toggle('icon-btn-selected', btn.dataset.icon === icon);
+  });
+}
+window.selectItineraryIcon = selectItineraryIcon;
+
+// 時間の取得
+function getItineraryTime() {
+  const h = document.getElementById('it-time-h').value;
+  const m = document.getElementById('it-time-m').value;
+  return h ? `${h}:${m}` : '';
+}
+
+// 時間のセット
+function setItineraryTime(timeStr) {
+  if (!timeStr) {
+    document.getElementById('it-time-h').value = '';
+    document.getElementById('it-time-m').value = '00';
+    return;
+  }
+  const [h, m] = timeStr.split(':');
+  document.getElementById('it-time-h').value = h || '';
+  document.getElementById('it-time-m').value = m || '00';
+}
+
+function editItinerary(docId) {
+  const item = itineraryAdminList.find(x => x.docId === docId);
+  if (!item) return;
+  document.getElementById('it-edit-id').value  = docId;
+  document.getElementById('it-date').value     = item.date || '';
+  setItineraryTime(item.time || '');
+  document.getElementById('it-icon').value     = item.icon || '';
+  document.getElementById('it-title').value    = item.title || '';
+  document.getElementById('it-location').value = item.location || '';
+  document.getElementById('it-memo').value     = item.memo || '';
+  // アイコンボタンの選択状態を更新
+  if (item.icon) selectItineraryIcon(item.icon);
+  document.getElementById('it-date').closest('.admin-form')?.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+async function deleteItinerary(docId) {
+  if (!confirm('この工程を削除しますか？')) return;
+  try {
+    await deleteDoc(doc(db, 'itinerary', docId));
+    showToast('削除しました');
+    await loadItineraryAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('削除に失敗しました', true);
+  }
+}
+
+document.getElementById('it-save-btn').addEventListener('click', async () => {
+  const editId   = document.getElementById('it-edit-id').value;
+  const date     = document.getElementById('it-date').value;
+  const time     = getItineraryTime();
+  const icon     = document.getElementById('it-icon').value.trim();
+  const title    = document.getElementById('it-title').value.trim();
+  const location = document.getElementById('it-location').value.trim();
+  const memo     = document.getElementById('it-memo').value.trim();
+
+  if (!date || !title) {
+    showToast('日付とタイトルは必須です', true);
+    return;
+  }
+
+  // orderは現在のリスト末尾+1
+  const maxOrder = itineraryAdminList.length > 0
+    ? Math.max(...itineraryAdminList.map((_,i) => i)) + 1
+    : 0;
+
+  try {
+    if (editId) {
+      await updateDoc(doc(db, 'itinerary', editId), { date, time, icon, title, location, memo });
+      showToast('更新しました ✓');
+      resetItineraryForm(false); // 編集後は日付クリア
+    } else {
+      await addDoc(collection(db, 'itinerary'), { date, time, icon, title, location, memo, order: String(maxOrder) });
+      showToast('追加しました ✓');
+      resetItineraryForm(true); // 新規追加後は日付を引き継ぐ
+    }
+    await loadItineraryAdmin();
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました', true);
+  }
+});
+
+document.getElementById('it-cancel-btn').addEventListener('click', resetItineraryForm);
+
+function resetItineraryForm(keepDate = false) {
+  const currentDate = document.getElementById('it-date').value; // 現在の日付を退避
+  document.getElementById('it-edit-id').value  = '';
+  document.getElementById('it-date').value     = keepDate ? currentDate : '';
+  setItineraryTime('');
+  document.getElementById('it-icon').value     = '';
+  document.getElementById('it-title').value    = '';
+  document.getElementById('it-location').value = '';
+  document.getElementById('it-memo').value     = '';
+  document.querySelectorAll('.icon-btn').forEach(btn => btn.classList.remove('icon-btn-selected'));
+}
+
+// ドラッグ並び替え
+function initItineraryDragSort() {
+  const list = document.getElementById('itinerary-admin-list');
+  let dragging = null;
+
+  list.querySelectorAll('.admin-notice-card').forEach(card => {
+    const handle = card.querySelector('.drag-handle');
+    if (handle) {
+      handle.addEventListener('mousedown', () => {
+        card.setAttribute('draggable', true);
+      });
+      handle.addEventListener('mouseleave', () => {
+        if (!dragging) card.setAttribute('draggable', false);
+      });
+    } else {
+      card.setAttribute('draggable', true);
+    }
+
+    card.addEventListener('dragstart', (e) => {
+      dragging = card;
+      setTimeout(() => card.style.opacity = '0.4', 0);
+    });
+    card.addEventListener('dragend', async () => {
+      card.style.opacity = '';
+      card.setAttribute('draggable', false);
+      dragging = null;
+      const cards = [...list.querySelectorAll('.admin-notice-card')];
+      const batch = writeBatch(db);
+      cards.forEach((c, i) => {
+        batch.update(doc(db, 'itinerary', c.dataset.docid), { order: String(i) });
+      });
+      await batch.commit();
+      await loadItineraryAdmin();
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (dragging && dragging !== card) {
+        const rect = card.getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) list.insertBefore(dragging, card);
         else list.insertBefore(dragging, card.nextSibling);
       }
     });
